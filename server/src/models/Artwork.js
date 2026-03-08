@@ -12,7 +12,17 @@ const artworkSchema = new mongoose.Schema(
       enum: ['Painting', 'Sketch', 'Digital Art', 'Sculpture', 'Photography', 'Other'],
       default: 'Other'
     },
-    artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true }
+    artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true },
+    status: {
+      type: String,
+      enum: ['Sold', 'Unsold'],
+      default: 'Unsold'
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['Paid', 'Pending'],
+      default: 'Pending'
+    }
   },
   { timestamps: true }
 );

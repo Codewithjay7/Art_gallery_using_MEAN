@@ -1,0 +1,49 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Your Cart</h1>
+
+    <div *ngIf="!items.length" class="bg-white rounded-lg shadow p-8 text-center">
+      <p class="text-gray-600 text-lg">Your cart is empty.</p>
+      <a routerLink="/arts" class="mt-4 inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+        Browse Artworks
+      </a>
+    </div>
+
+    <div *ngIf="items.length" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        <div *ngFor="let item of items" class="bg-white rounded-lg shadow flex gap-4 p-4">
+          <img [src]="'http://localhost:3000' + (item.artwork.imageUrl || '')"
+               [alt]="item.artwork.title"
+               class="w-24 h-24 object-cover rounded bg-gray-200">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-gray-900">{{ item.artwork.title }}</h3>
+            <p class="text-sm text-gray-500 mb-1">
+              {{ $any(item.artwork.artist)?.name || 'Unknown Artist' }}
+            </p>
+            <p class="text-sm font-bold text-gray-900">{{ item.artwork.price | currency:'USD' }}</p>
+          </div>
+          <button (click)="remove(item)" class="text-red-600 hover:text-red-800 text-sm font-medium">
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6 h-fit">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-gray-600">Items</span>
+          <span class="font-medium text-gray-900">{{ items.length }}</span>
+        </div>
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-gray-600">Total</span>
+          <span class="text-2xl font-bold text-gray-900">{{ total | currency:'USD' }}</span>
+        </div>
+        <button (click)="goToCheckout()"
+                class="w-full px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

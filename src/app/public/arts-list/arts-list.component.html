@@ -19,8 +19,8 @@
       {{ error }}
     </div>
 
-    <div *ngIf="!loading && (arts?.length || 0) > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <a *ngFor="let artwork of arts"
+    <div *ngIf="!loading && (filteredArts?.length || 0) > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <a *ngFor="let artwork of filteredArts"
          [routerLink]="getArtworkId(artwork) ? ['/artwork', getArtworkId(artwork)] : null"
          (click)="!getArtworkId(artwork) && $event.preventDefault()"
          class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer">
@@ -40,7 +40,7 @@
       </a>
     </div>
 
-    <ng-container *ngIf="!loading && (arts?.length || 0) === 0">
+    <ng-container *ngIf="!loading && (filteredArts?.length || 0) === 0">
       <div class="text-center py-12 bg-white rounded shadow">
         <p class="text-gray-600 text-lg">No arts available right now.</p>
       </div>

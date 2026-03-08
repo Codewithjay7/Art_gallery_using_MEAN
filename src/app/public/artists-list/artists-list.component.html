@@ -19,8 +19,8 @@
       {{ error }}
     </div>
 
-    <div *ngIf="!loading && (artists?.length || 0) > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <a *ngFor="let artist of artists"
+    <div *ngIf="!loading && (filteredArtists?.length || 0) > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <a *ngFor="let artist of filteredArtists"
          [routerLink]="getArtistId(artist) ? ['/artist', getArtistId(artist)] : null"
          (click)="!getArtistId(artist) && $event.preventDefault()"
          class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer">
@@ -37,7 +37,7 @@
       </a>
     </div>
 
-    <ng-container *ngIf="!loading && (artists?.length || 0) === 0">
+    <ng-container *ngIf="!loading && (filteredArtists?.length || 0) === 0">
       <div class="text-center py-12 bg-white rounded shadow">
         <p class="text-gray-600 text-lg">No artists found.</p>
       </div>

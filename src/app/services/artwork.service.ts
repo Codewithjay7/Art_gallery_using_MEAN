@@ -11,6 +11,8 @@ export interface Artwork {
   price: number;
   category: 'Painting' | 'Sketch' | 'Digital Art' | 'Sculpture';
   artist: string | { id?: string; _id?: string; name: string };
+  status?: 'Sold' | 'Unsold';
+  paymentStatus?: 'Paid' | 'Pending';
   createdAt?: string;
 }
 

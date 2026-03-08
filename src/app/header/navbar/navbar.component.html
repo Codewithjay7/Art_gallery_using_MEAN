@@ -28,16 +28,17 @@
         </a>
       </li>
 
-      <li class="hover:text-gray-9000-300 cursor-pointer">Events</li>
+      <li><a routerLink="/events" class="hover:text-gray-9000-300 cursor-pointer">Events</a></li>
     </ul>
 
     <!-- Search and Auth Buttons -->
     <div class="hidden md:flex items-center gap-2">
       <input
         type="text"
-        placeholder="Search"
+        [(ngModel)]="searchTerm"
+        placeholder="Search artworks or artists"
         class="px-3 py-1 rounded bg-gray-9000 border border-gray-9000-600 text-gray-9000-300 focus:outline-none">
-      <button class="px-3 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800">
+      <button (click)="onSearch()" class="px-3 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800">
         Search
       </button>
       <a routerLink="/login" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
@@ -76,15 +77,18 @@
           Artists
         </a>
       </li>
-      <li class="hover:text-gray-9000-300 cursor-pointer py-2">Events</li>
+      <li class="hover:text-gray-9000-300 cursor-pointer py-2">
+        <a routerLink="/events" class="block w-full">Events</a>
+      </li>
       <li class="pt-2 border-t border-gray-9000-700">
         <div class="flex flex-col gap-2 mt-2">
           <div class="flex gap-2">
             <input
               type="text"
-              placeholder="Search"
+              [(ngModel)]="searchTerm"
+              placeholder="Search artworks or artists"
               class="flex-1 px-3 py-2 rounded bg-gray-9000 border border-gray-9000-600 text-gray-9000-300 focus:outline-none focus:border-gray-9000-400">
-            <button class="px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors">
+            <button (click)="onSearch()" class="px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors">
               Search
             </button>
           </div>

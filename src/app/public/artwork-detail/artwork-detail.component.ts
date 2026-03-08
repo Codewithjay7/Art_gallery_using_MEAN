@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PublicService } from '../../services/public.service';
 import { Artwork } from '../../services/artwork.service';
+import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-artwork-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './artwork-detail.component.html',
   styleUrl: './artwork-detail.component.css'
 })
@@ -15,11 +18,21 @@ export class ArtworkDetailComponent implements OnInit {
   artwork: Artwork | null = null;
   loading = true;
   error = '';
+  inCart = false;
+  inWishlist = false;
+  actionMessage = '';
+  showContact = false;
+  contactSubmitted = false;
+  contactName = '';
+  contactEmail = '';
+  contactMessage = '';
 
   constructor(
     private route: ActivatedRoute,
     private publicService: PublicService,
-    public router: Router
+    public router: Router,
+    private cartService: CartService,
+    private wishlistService: WishlistService
   ) {}
 
   ngOnInit() {
@@ -40,6 +53,7 @@ export class ArtworkDetailComponent implements OnInit {
       next: (response) => {
         if (response.success && response.artwork) {
           this.artwork = response.artwork;
+          this.syncStates();
         } else {
           this.error = 'Artwork not found';
         }
@@ -51,6 +65,16 @@ export class ArtworkDetailComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private syncStates() {
+    if (!this.artwork) {
+      this.inCart = false;
+      this.inWishlist = false;
+      return;
+    }
+    this.inCart = this.cartService.isInCart(this.artwork);
+    this.inWishlist = this.wishlistService.isInWishlist(this.artwork);
   }
 
   getImageUrl(imageUrl: string | undefined): string {
@@ -81,5 +105,28 @@ export class ArtworkDetailComponent implements OnInit {
       style: 'currency',
       currency: 'USD'
     }).format(price);
+  }
+
+  addToCart() {
+    if (!this.artwork) return;
+    this.cartService.add(this.artwork);
+    this.syncStates();
+    this.actionMessage = this.inCart ? 'Artwork added to cart.' : '';
+  }
+
+  addToWishlist() {
+    if (!this.artwork) return;
+    this.wishlistService.add(this.artwork);
+    this.syncStates();
+    this.actionMessage = this.inWishlist ? 'Artwork added to wishlist.' : '';
+  }
+
+  toggleContact() {
+    this.showContact = !this.showContact;
+  }
+
+  submitContact() {
+    this.contactSubmitted = true;
+    this.actionMessage = 'Message sent to artist (simulated).';
   }
 }

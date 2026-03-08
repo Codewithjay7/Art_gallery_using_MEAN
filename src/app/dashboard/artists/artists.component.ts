@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ArtistService, Artist } from '../../services/artist.service';
 
 @Component({
   selector: 'app-artists',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './artists.component.html',
   styleUrl: './artists.component.css'
 })
@@ -16,6 +17,9 @@ export class ArtistsComponent implements OnInit {
   error = '';
   showDeleteModal = false;
   artistToDelete: Artist | null = null;
+  deleting = false;
+  success = '';
+  searchTerm = '';
 
   constructor(
     private artistService: ArtistService,
@@ -29,6 +33,7 @@ export class ArtistsComponent implements OnInit {
   loadArtists() {
     this.loading = true;
     this.error = '';
+    this.success = '';
     this.artistService.getArtists().subscribe({
       next: (response) => {
         if (response.success && response.artists) {
@@ -44,6 +49,15 @@ export class ArtistsComponent implements OnInit {
     });
   }
 
+  get filteredArtists(): Artist[] {
+    if (!this.searchTerm) return this.artists;
+    const term = this.searchTerm.toLowerCase();
+    return this.artists.filter((a) =>
+      (a.name || '').toLowerCase().includes(term) ||
+      (a.contact?.email || '').toLowerCase().includes(term)
+    );
+  }
+
   confirmDelete(artist: Artist) {
     this.artistToDelete = artist;
     this.showDeleteModal = true;
@@ -55,21 +69,26 @@ export class ArtistsComponent implements OnInit {
   }
 
   deleteArtist() {
-    if (!this.artistToDelete || !this.artistToDelete.id) return;
+    const id = (this.artistToDelete as any)?.id || (this.artistToDelete as any)?._id;
+    if (!this.artistToDelete || !id) return;
 
-    this.artistService.deleteArtist(this.artistToDelete.id).subscribe({
+    this.deleting = true;
+    this.artistService.deleteArtist(id).subscribe({
       next: (response) => {
         if (response.success) {
+          this.success = 'Artist deleted successfully.';
           this.loadArtists();
         }
         this.showDeleteModal = false;
         this.artistToDelete = null;
+        this.deleting = false;
       },
       error: (error) => {
         console.error('Error deleting artist:', error);
         this.error = 'Failed to delete artist. Please try again.';
         this.showDeleteModal = false;
         this.artistToDelete = null;
+        this.deleting = false;
       }
     });
   }

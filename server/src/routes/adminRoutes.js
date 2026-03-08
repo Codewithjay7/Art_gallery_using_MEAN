@@ -18,6 +18,13 @@ const {
   updateArtwork,
   deleteArtwork
 } = require('../controllers/artworkController');
+const {
+  listEvents,
+  getEvent,
+  createEvent,
+  updateEvent,
+  deleteEvent
+} = require('../controllers/eventController');
 
 // Stats
 router.get('/stats', protect, adminOnly, getStats);
@@ -35,6 +42,13 @@ router.post('/artworks', protect, adminOnly, uploadArtworkImage.single('image'),
 router.get('/artworks/:id', protect, adminOnly, getArtwork);
 router.put('/artworks/:id', protect, adminOnly, uploadArtworkImage.single('image'), updateArtwork);
 router.delete('/artworks/:id', protect, adminOnly, deleteArtwork);
+
+// Events
+router.get('/events', protect, adminOnly, listEvents);
+router.post('/events', protect, adminOnly, createEvent);
+router.get('/events/:id', protect, adminOnly, getEvent);
+router.put('/events/:id', protect, adminOnly, updateEvent);
+router.delete('/events/:id', protect, adminOnly, deleteEvent);
 
 module.exports = router;
 

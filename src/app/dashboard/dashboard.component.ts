@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIf, CommonModule } from '@angular/common';
-import { AuthService, User } from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { AdminService, DashboardStats } from '../services/admin.service';
-import { ArtworkService, Artwork } from '../services/artwork.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,8 +16,14 @@ export class DashboardComponent implements OnInit {
   stats: DashboardStats = {
     totalArtists: 0,
     totalArtworks: 0,
+    totalUsers: 0,
+    totalEvents: 0,
+    soldArtworks: 0,
+    unsoldArtworks: 0,
+    totalRevenue: 0,
     categories: {},
-    recentArtworks: []
+    recentArtworks: [],
+    recentArtists: []
   };
 
   constructor(

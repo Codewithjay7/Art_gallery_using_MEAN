@@ -33,7 +33,7 @@ exports.getArtwork = async (req, res) => {
     if (!id || id === 'undefined' || id === 'null' || !mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: 'Invalid artwork id' });
     }
-    const artwork = await Artwork.findById(req.params.id).populate('artist', 'name profileImageUrl');
+    const artwork = await Artwork.findById(req.params.id).populate('artist', 'name profileImageUrl contact');
     if (!artwork) return res.status(404).json({ success: false, message: 'Artwork not found' });
     res.status(200).json({ success: true, artwork });
   } catch (error) {
@@ -46,7 +46,7 @@ exports.getArtwork = async (req, res) => {
 // @access  Admin
 exports.createArtwork = async (req, res) => {
   try {
-    const { title, description, price, category, artistId } = req.body;
+    const { title, description, price, category, artistId, status, paymentStatus } = req.body;
     if (!title || !category || !artistId) {
       return res.status(400).json({ success: false, message: 'Title, category, and artistId are required' });
     }
@@ -59,7 +59,7 @@ exports.createArtwork = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Image file is required' });
     }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+    const imageUrl = `/uploads/${req.file.filename}`;
 
     const artwork = await Artwork.create({
       title,
@@ -67,7 +67,9 @@ exports.createArtwork = async (req, res) => {
       imageUrl,
       price: Number(price || 0),
       category,
-      artist: artist._id
+      artist: artist._id,
+      status: status || 'Unsold',
+      paymentStatus: paymentStatus || 'Pending'
     });
 
     const populated = await Artwork.findById(artwork._id).populate('artist', 'name profileImageUrl');
@@ -86,7 +88,7 @@ exports.createArtwork = async (req, res) => {
 // @access  Admin
 exports.updateArtwork = async (req, res) => {
   try {
-    const { title, description, price, category, artistId } = req.body;
+    const { title, description, price, category, artistId, status, paymentStatus } = req.body;
     const artwork = await Artwork.findById(req.params.id);
     if (!artwork) return res.status(404).json({ success: false, message: 'Artwork not found' });
 
@@ -105,6 +107,8 @@ exports.updateArtwork = async (req, res) => {
     if (description !== undefined) artwork.description = description;
     if (price !== undefined) artwork.price = Number(price);
     if (category !== undefined) artwork.category = category;
+    if (status !== undefined) artwork.status = status;
+    if (paymentStatus !== undefined) artwork.paymentStatus = paymentStatus;
 
     await artwork.save();
     const populated = await Artwork.findById(artwork._id).populate('artist', 'name profileImageUrl');

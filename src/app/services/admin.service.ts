@@ -5,8 +5,14 @@ import { Observable } from 'rxjs';
 export interface DashboardStats {
   totalArtists: number;
   totalArtworks: number;
+  totalUsers: number;
+  totalEvents: number;
+  soldArtworks: number;
+  unsoldArtworks: number;
+  totalRevenue: number;
   categories: { [key: string]: number };
   recentArtworks: any[];
+  recentArtists: any[];
 }
 
 export interface StatsResponse {

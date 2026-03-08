@@ -1,0 +1,41 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Events</h1>
+        <p class="text-gray-600">Explore gallery exhibitions</p>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <p class="text-gray-500 mt-4">Loading events...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="bg-red-100 text-red-700 p-4 rounded mb-6">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && events.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <a *ngFor="let event of events"
+         [routerLink]="['/event', event.id || event._id]"
+         class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer">
+        <div class="p-5">
+          <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ event.title }}</h3>
+          <p class="text-xs text-gray-500 mb-2">
+            {{ formatDate(event.startDate) }} - {{ formatDate(event.endDate) }}
+          </p>
+          <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ event.description }}</p>
+          <p class="text-sm text-gray-500">
+            <strong>Location:</strong> {{ event.location }}
+          </p>
+        </div>
+      </a>
+    </div>
+
+    <div *ngIf="!loading && events.length === 0" class="bg-white rounded-lg shadow p-12 text-center">
+      <p class="text-gray-600 text-lg">No events available right now.</p>
+    </div>
+  </div>
+</div>
+

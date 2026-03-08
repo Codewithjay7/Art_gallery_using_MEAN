@@ -16,6 +16,13 @@ export interface PublicArtworksResponse {
   count?: number;
 }
 
+export interface PublicEventsResponse {
+  success: boolean;
+  events?: any[];
+  event?: any;
+  count?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -45,5 +52,13 @@ export class PublicService {
       throw new Error('Artwork ID missing');
     }
     return this.http.get<{ success: boolean; artwork?: Artwork }>(`${this.apiUrl}/artworks/${id}`);
+  }
+
+  getEvents(): Observable<PublicEventsResponse> {
+    return this.http.get<PublicEventsResponse>(`${this.apiUrl}/events`);
+  }
+
+  getEvent(id: string): Observable<PublicEventsResponse> {
+    return this.http.get<PublicEventsResponse>(`${this.apiUrl}/events/${id}`);
   }
 }

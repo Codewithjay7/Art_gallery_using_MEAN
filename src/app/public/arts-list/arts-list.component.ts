@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PublicService } from '../../services/public.service';
 import { Artwork } from '../../services/artwork.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-arts-list',
@@ -15,11 +16,15 @@ export class ArtsListComponent implements OnInit {
   arts: Artwork[] = [];
   loading = true;
   error = '';
+  searchTerm = '';
 
-  constructor(private publicService: PublicService) {}
+  constructor(private publicService: PublicService, private searchService: SearchService) {}
 
   ngOnInit() {
     this.fetchArts();
+    this.searchService.query$.subscribe(q => {
+      this.searchTerm = q;
+    });
   }
 
   fetchArts() {
@@ -38,6 +43,17 @@ export class ArtsListComponent implements OnInit {
     });
   }
 
+  get filteredArts(): Artwork[] {
+    if (!this.searchTerm) return this.arts;
+    const term = this.searchTerm.toLowerCase();
+    return this.arts.filter(a =>
+      (a.title || '').toLowerCase().includes(term) ||
+      (a.category || '').toLowerCase().includes(term) ||
+      (typeof a.artist === 'object' && (a.artist as any).name
+        ? (a.artist as any).name.toLowerCase().includes(term)
+        : false)
+    );
+  }
   getArtworkId(artwork: any): string | null {
     return artwork?.id || artwork?._id || null;
   }

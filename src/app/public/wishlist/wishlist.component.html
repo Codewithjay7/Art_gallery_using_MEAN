@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Wishlist</h1>
+
+    <div *ngIf="!items.length" class="bg-white rounded-lg shadow p-8 text-center">
+      <p class="text-gray-600 text-lg">Your wishlist is empty.</p>
+      <a routerLink="/arts" class="mt-4 inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+        Browse Artworks
+      </a>
+    </div>
+
+    <div *ngIf="items.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let item of items" class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition">
+        <img [src]="'http://localhost:3000' + (item.artwork.imageUrl || '')"
+             [alt]="item.artwork.title"
+             class="w-full h-40 object-cover bg-gray-200">
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ item.artwork.title }}</h3>
+          <p class="text-sm text-gray-500 mb-1">
+            {{ $any(item.artwork.artist)?.name || 'Unknown Artist' }}
+          </p>
+          <p class="text-sm font-bold text-gray-900 mb-3">{{ item.artwork.price | currency:'USD' }}</p>
+          <div class="flex gap-2">
+            <button (click)="moveToCart(item)"
+                    class="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+              Move to Cart
+            </button>
+            <button (click)="remove(item)"
+                    class="flex-1 px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
