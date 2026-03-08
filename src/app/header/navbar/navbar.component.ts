@@ -3,6 +3,7 @@ import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SearchService } from '../../services/search.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,8 +14,17 @@ import { SearchService } from '../../services/search.service';
 export class NavbarComponent {
   open = false;
   searchTerm = '';
+  cartCount = 0;
 
-  constructor(private router: Router, private searchService: SearchService) {}
+  constructor(
+    private router: Router,
+    private searchService: SearchService,
+    private cartService: CartService
+  ) {
+    this.cartService.items$.subscribe(items => {
+      this.cartCount = items.length;
+    });
+  }
 
   toggleMobileMenu() {
     this.open = !this.open;

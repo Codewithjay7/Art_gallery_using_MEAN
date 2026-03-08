@@ -41,6 +41,18 @@
       <button (click)="onSearch()" class="px-3 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800">
         Search
       </button>
+      <!-- Cart Icon -->
+      <a routerLink="/cart" class="relative flex items-center px-3 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+        <svg class="w-5 h-5 text-gray-9000-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-2 8m5-8v8m6-8v8M9 21h6"/>
+        </svg>
+        <span class="ml-1 text-sm text-gray-9000-300">Cart</span>
+        <span *ngIf="cartCount > 0"
+              class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-semibold bg-red-600 text-white">
+          {{ cartCount }}
+        </span>
+      </a>
       <a routerLink="/login" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
         Login
       </a>
@@ -92,7 +104,21 @@
               Search
             </button>
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-2 items-center mt-2">
+            <!-- Cart Icon (mobile) -->
+            <a routerLink="/cart" class="relative flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+              <span class="inline-flex items-center justify-center gap-1">
+                <svg class="w-5 h-5 text-gray-9000-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-2 8m5-8v8m6-8v8M9 21h6"/>
+                </svg>
+                <span>Cart</span>
+                <span *ngIf="cartCount > 0"
+                      class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-semibold bg-red-600 text-white">
+                  {{ cartCount }}
+                </span>
+              </span>
+            </a>
             <a routerLink="/login" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
               Login
             </a>
