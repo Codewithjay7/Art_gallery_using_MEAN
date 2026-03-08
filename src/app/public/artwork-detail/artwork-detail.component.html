@@ -1,0 +1,70 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <!-- Back Button -->
+    <button (click)="router.navigate(['/'])" class="mb-6 text-gray-600 hover:text-gray-900 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Back to Gallery
+    </button>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <p class="text-gray-500 mt-4">Loading artwork...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!loading && error" class="text-center py-12">
+      <p class="text-red-600 text-lg">{{ error }}</p>
+    </div>
+
+    <!-- Artwork Detail -->
+    <div *ngIf="!loading && artwork" class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Image -->
+        <div class="bg-gray-100">
+          <img [src]="getImageUrl(artwork.imageUrl)" [alt]="artwork.title" 
+               class="w-full h-full object-contain">
+        </div>
+
+        <!-- Details -->
+        <div class="p-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ artwork.title }}</h1>
+          
+          <div class="mb-6">
+            <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+              {{ artwork.category }}
+            </span>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-gray-700 text-lg leading-relaxed">{{ artwork.description }}</p>
+          </div>
+
+          <div class="border-t border-b border-gray-200 py-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-gray-600">Price</span>
+              <span class="text-3xl font-bold text-gray-900">{{ formatPrice(artwork.price) }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">Artist</span>
+              <a *ngIf="getArtistId(artwork.artist)" 
+                 [routerLink]="['/artist', getArtistId(artwork.artist)]"
+                 class="text-purple-600 hover:text-purple-800 font-medium">
+                {{ getArtistName(artwork.artist) }}
+              </a>
+              <span *ngIf="!getArtistId(artwork.artist)" class="text-gray-900 font-medium">
+                {{ getArtistName(artwork.artist) }}
+              </span>
+            </div>
+          </div>
+
+          <button class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+            Contact Artist
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

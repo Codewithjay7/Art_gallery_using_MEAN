@@ -1,0 +1,104 @@
+<nav class="bg-gray-9000 text-gray-9000-400 px-6 py-4">
+  <div class="flex items-center justify-between">
+
+    <!-- Logo -->
+    <div class="text-xl font-bold">
+      ArtGallery
+    </div>
+
+    <!-- Menu -->
+    <ul class="hidden md:flex gap-6 items-center">
+      <li><a routerLink="/" routerLinkActive="text-white" class="hover:text-gray-9000-300 cursor-pointer">Home</a></li>
+
+      <!-- Arts dropdown -->
+      <li class="relative group">
+        <a
+          routerLink="/arts"
+          class="hover:text-gray-9000-300 cursor-pointer">
+          Arts
+        </a>
+      </li>
+
+      <!-- Artist dropdown -->
+      <li class="relative group">
+        <a
+          routerLink="/artists"
+          class="hover:text-gray-9000-300 cursor-pointer">
+          Artists
+        </a>
+      </li>
+
+      <li class="hover:text-gray-9000-300 cursor-pointer">Events</li>
+    </ul>
+
+    <!-- Search and Auth Buttons -->
+    <div class="hidden md:flex items-center gap-2">
+      <input
+        type="text"
+        placeholder="Search"
+        class="px-3 py-1 rounded bg-gray-9000 border border-gray-9000-600 text-gray-9000-300 focus:outline-none">
+      <button class="px-3 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800">
+        Search
+      </button>
+      <a routerLink="/login" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+        Login
+      </a>
+      <a routerLink="/register" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+        Register
+      </a>
+    </div>
+
+    <!-- Mobile menu icon -->
+    <button
+      class="md:hidden text-gray-9000-400 hover:text-gray-9000-300 transition-colors"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle menu">
+      <svg *ngIf="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      <svg *ngIf="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div *ngIf="open" class="md:hidden mt-4 pb-4 border-t border-gray-9000-700 pt-4">
+    <ul class="flex flex-col gap-3">
+      <li><a routerLink="/" class="hover:text-gray-9000-300 cursor-pointer py-2 block">Home</a></li>
+      <li class="hover:text-gray-9000-300 cursor-pointer py-2">
+        <a routerLink="/arts" class="font-semibold mb-2 w-full text-left block">
+          Arts
+        </a>
+      </li>
+      <li class="hover:text-gray-9000-300 cursor-pointer py-2">
+        <a routerLink="/artists" class="font-semibold mb-2 w-full text-left block">
+          Artists
+        </a>
+      </li>
+      <li class="hover:text-gray-9000-300 cursor-pointer py-2">Events</li>
+      <li class="pt-2 border-t border-gray-9000-700">
+        <div class="flex flex-col gap-2 mt-2">
+          <div class="flex gap-2">
+            <input
+              type="text"
+              placeholder="Search"
+              class="flex-1 px-3 py-2 rounded bg-gray-9000 border border-gray-9000-600 text-gray-9000-300 focus:outline-none focus:border-gray-9000-400">
+            <button class="px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors">
+              Search
+            </button>
+          </div>
+          <div class="flex gap-2">
+            <a routerLink="/login" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+              Login
+            </a>
+            <a routerLink="/register" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+              Register
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</nav>

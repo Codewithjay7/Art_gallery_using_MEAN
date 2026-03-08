@@ -1,0 +1,49 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Arts</h1>
+        <p class="text-gray-600">Browse all artworks</p>
+      </div>
+      <button (click)="fetchArts()" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm">
+        Refresh
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <p class="text-gray-500 mt-4">Loading arts...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="bg-red-100 text-red-700 p-4 rounded mb-6">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && (arts?.length || 0) > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <a *ngFor="let artwork of arts"
+         [routerLink]="getArtworkId(artwork) ? ['/artwork', getArtworkId(artwork)] : null"
+         (click)="!getArtworkId(artwork) && $event.preventDefault()"
+         class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer">
+        <div class="relative overflow-hidden bg-gray-200" style="padding-bottom: 100%;">
+          <img [src]="getImageUrl(artwork.imageUrl)" [alt]="artwork.title"
+               class="absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ artwork.title }}</h3>
+          <p class="text-sm text-gray-600 line-clamp-2 mb-2">{{ artwork.description }}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs px-2 py-1 bg-purple-100 text-purple-800 rounded">{{ artwork.category }}</span>
+            <span class="text-sm font-bold text-gray-900">{{ formatPrice(artwork.price) }}</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">By {{ getArtistName(artwork.artist) }}</p>
+        </div>
+      </a>
+    </div>
+
+    <ng-container *ngIf="!loading && (arts?.length || 0) === 0">
+      <div class="text-center py-12 bg-white rounded shadow">
+        <p class="text-gray-600 text-lg">No arts available right now.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

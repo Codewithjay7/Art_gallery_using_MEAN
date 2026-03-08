@@ -1,0 +1,33 @@
+{
+  "name": "art-gallery-server",
+  "version": "1.0.0",
+  "description": "Backend server for Art Gallery application",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seed/seedDummyData.js",
+    "seed:wipe": "node src/seed/seedDummyData.js --wipe",
+    "seed:reset-admin": "node src/seed/resetAdmin.js"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "authentication"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^3.0.2",
+    "mongoose": "^8.0.3",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

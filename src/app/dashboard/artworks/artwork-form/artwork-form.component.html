@@ -1,0 +1,108 @@
+<div class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">{{ isEditMode ? 'Edit Artwork' : 'Add New Artwork' }}</h1>
+      <p class="text-gray-600 mt-1">{{ isEditMode ? 'Update artwork information' : 'Add a new artwork to the gallery' }}</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      {{ error }}
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="artworkForm" (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow p-6">
+      <!-- Image Upload & Preview -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Artwork Image *</label>
+        <div class="flex flex-col items-center gap-4">
+          <div *ngIf="imagePreview" class="w-full max-w-md">
+            <img [src]="imagePreview" alt="Preview" class="w-full h-64 object-contain border-2 border-gray-300 rounded-lg">
+          </div>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" 
+                 class="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+        </div>
+        <p class="mt-1 text-sm text-gray-500">JPEG, PNG or WEBP (max 5MB)</p>
+        <p *ngIf="!isEditMode && artworkForm.get('image')?.invalid && artworkForm.get('image')?.touched" class="mt-1 text-sm text-red-600">
+          Image is required for new artwork.
+        </p>
+      </div>
+
+      <!-- Title -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+        <input type="text" formControlName="title" 
+               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+               [class.border-red-500]="artworkForm.get('title')?.invalid && artworkForm.get('title')?.touched">
+        <p *ngIf="artworkForm.get('title')?.invalid && artworkForm.get('title')?.touched" class="mt-1 text-sm text-red-600">
+          Title is required
+        </p>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+        <textarea formControlName="description" rows="4"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  [class.border-red-500]="artworkForm.get('description')?.invalid && artworkForm.get('description')?.touched"></textarea>
+        <p *ngIf="artworkForm.get('description')?.invalid && artworkForm.get('description')?.touched" class="mt-1 text-sm text-red-600">
+          Description is required
+        </p>
+      </div>
+
+      <!-- Price & Category -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Price (USD) *</label>
+          <input type="number" formControlName="price" min="0" step="0.01"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                 [class.border-red-500]="artworkForm.get('price')?.invalid && artworkForm.get('price')?.touched">
+          <p *ngIf="artworkForm.get('price')?.invalid && artworkForm.get('price')?.touched" class="mt-1 text-sm text-red-600">
+            Valid price is required
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+          <select formControlName="category"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  [class.border-red-500]="artworkForm.get('category')?.invalid && artworkForm.get('category')?.touched">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+          <p *ngIf="artworkForm.get('category')?.invalid && artworkForm.get('category')?.touched" class="mt-1 text-sm text-red-600">
+            Category is required
+          </p>
+        </div>
+      </div>
+
+      <!-- Artist -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Artist *</label>
+        <select formControlName="artistId"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                [class.border-red-500]="artworkForm.get('artistId')?.invalid && artworkForm.get('artistId')?.touched">
+          <option value="">Select an artist</option>
+          <option *ngFor="let artist of artists" [value]="artist._id || artist.id">{{ artist.name }}</option>
+        </select>
+        <p *ngIf="artworkForm.get('artistId')?.invalid && artworkForm.get('artistId')?.touched" class="mt-1 text-sm text-red-600">
+          Artist is required
+        </p>
+        <p *ngIf="artists.length === 0" class="mt-1 text-sm text-yellow-600">
+          No artists available. <a routerLink="/dashboard/artists/new" class="text-blue-600 hover:underline">Create one first</a>.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="cancel()" 
+                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="loading || artworkForm.invalid || artists.length === 0"
+                class="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update Artwork' : 'Create Artwork') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <!-- Back Button -->
+    <button (click)="router.navigate(['/'])" class="mb-6 text-gray-600 hover:text-gray-900 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Back to Gallery
+    </button>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <p class="text-gray-500 mt-4">Loading artist...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!loading && error" class="text-center py-12">
+      <p class="text-red-600 text-lg">{{ error }}</p>
+    </div>
+
+    <!-- Artist Profile -->
+    <div *ngIf="!loading && artist" class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+      <div class="p-8">
+        <div class="flex flex-col md:flex-row gap-8">
+          <!-- Profile Image -->
+          <div class="flex-shrink-0">
+            <img [src]="getImageUrl(artist.profileImageUrl)" [alt]="artist.name"
+                 class="w-48 h-48 rounded-full object-cover border-4 border-purple-200">
+          </div>
+
+          <!-- Artist Info -->
+          <div class="flex-1">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ artist.name }}</h1>
+            <p class="text-gray-700 text-lg leading-relaxed mb-6">{{ artist.bio }}</p>
+
+            <!-- Contact Info -->
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Contact</h3>
+              <p class="text-gray-600">{{ artist.contact?.email }}</p>
+              <p class="text-gray-600">{{ artist.contact?.phone }}</p>
+            </div>
+
+            <!-- Social Links -->
+            <div *ngIf="artist.socialLinks" class="flex gap-4">
+              <a *ngIf="artist.socialLinks.website" [href]="artist.socialLinks.website" target="_blank"
+                 class="text-purple-600 hover:text-purple-800">
+                Website
+              </a>
+              <a *ngIf="artist.socialLinks.instagram" [href]="'https://instagram.com/' + artist.socialLinks.instagram" target="_blank"
+                 class="text-purple-600 hover:text-purple-800">
+                Instagram
+              </a>
+              <a *ngIf="artist.socialLinks.twitter" [href]="'https://twitter.com/' + artist.socialLinks.twitter" target="_blank"
+                 class="text-purple-600 hover:text-purple-800">
+                Twitter
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist Artworks -->
+    <div *ngIf="artworks.length > 0">
+      <h2 class="text-3xl font-bold text-gray-900 mb-6">Artworks by {{ artist?.name }}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let artwork of artworks"
+             [routerLink]="['/artwork', artwork.id]"
+             class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
+          <div class="relative overflow-hidden bg-gray-200" style="padding-bottom: 100%;">
+            <img [src]="getImageUrl(artwork.imageUrl)" [alt]="artwork.title"
+                 class="absolute inset-0 w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ artwork.title }}</h3>
+            <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ artwork.description }}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs px-2 py-1 bg-purple-100 text-purple-800 rounded">{{ artwork.category }}</span>
+              <span class="text-sm font-bold text-gray-900">{{ formatPrice(artwork.price) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Artworks -->
+    <div *ngIf="!loading && artworks.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
+      <p class="text-gray-500 text-lg">No artworks available from this artist yet.</p>
+    </div>
+  </div>
+</div>
