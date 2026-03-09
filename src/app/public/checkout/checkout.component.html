@@ -1,34 +1,251 @@
 <div class="min-h-screen bg-gray-50 py-12">
-  <div class="container mx-auto px-6 max-w-xl">
+  <div class="container mx-auto px-6 max-w-3xl">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">Checkout</h1>
 
     <div class="bg-white rounded-lg shadow p-6">
-      <div *ngIf="!success">
-        <p class="text-gray-700 mb-4">
-          You are about to simulate a payment for your artworks.
-        </p>
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-gray-600">Total amount</span>
-          <span class="text-2xl font-bold text-gray-900">{{ total | currency:'USD' }}</span>
+      <!-- Step indicator -->
+      <div class="flex items-center justify-between mb-6 text-sm font-medium">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-7 h-7 rounded-full flex items-center justify-center text-white"
+            [ngClass]="step === 'delivery' ? 'bg-purple-600' : 'bg-gray-400'">
+            1
+          </div>
+          <span [class.text-gray-900]="step === 'delivery'" class="text-gray-500">Delivery Details</span>
         </div>
-
-        <button (click)="payNow()"
-                [disabled]="processing || total === 0"
-                class="w-full px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50">
-          <span *ngIf="!processing">Pay Now</span>
-          <span *ngIf="processing">Processing...</span>
-        </button>
+        <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+        <div class="flex items-center gap-2">
+          <div
+            class="w-7 h-7 rounded-full flex items-center justify-center text-white"
+            [ngClass]="step === 'payment' || step === 'success' ? 'bg-purple-600' : 'bg-gray-400'">
+            2
+          </div>
+          <span [class.text-gray-900]="step === 'payment' || step === 'success'" class="text-gray-500">Payment</span>
+        </div>
       </div>
 
-      <div *ngIf="success" class="text-center">
+      <!-- Delivery form -->
+      <form *ngIf="step === 'delivery'" #deliveryForm="ngForm" (ngSubmit)="continueToPayment(deliveryForm)" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Customer info -->
+          <div class="md:col-span-2">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Customer Information</h2>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input
+              type="text"
+              name="fullName"
+              [(ngModel)]="delivery.fullName"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['fullName'].invalid"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              [(ngModel)]="delivery.email"
+              required
+              email
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['email'].invalid"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              [(ngModel)]="delivery.phone"
+              required
+              pattern="^[0-9+\-\s()]{7,20}$"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['phone'].invalid"
+            />
+          </div>
+
+          <!-- Address -->
+          <div class="md:col-span-2 mt-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Delivery Address</h2>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
+            <input
+              type="text"
+              name="addressLine1"
+              [(ngModel)]="delivery.addressLine1"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['addressLine1'].invalid"
+            />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address Line 2 (optional)</label>
+            <input
+              type="text"
+              name="addressLine2"
+              [(ngModel)]="delivery.addressLine2"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <input
+              type="text"
+              name="city"
+              [(ngModel)]="delivery.city"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['city'].invalid"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+            <input
+              type="text"
+              name="state"
+              [(ngModel)]="delivery.state"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['state'].invalid"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <input
+              type="text"
+              name="country"
+              [(ngModel)]="delivery.country"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['country'].invalid"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Postal Code / Zip Code</label>
+            <input
+              type="text"
+              name="postalCode"
+              [(ngModel)]="delivery.postalCode"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              [class.border-red-500]="submitted && deliveryForm.controls['postalCode'].invalid"
+            />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Notes (optional)</label>
+            <textarea
+              name="deliveryNotes"
+              [(ngModel)]="delivery.deliveryNotes"
+              rows="3"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+          <div class="text-sm text-gray-500">
+            <span>Total amount: </span>
+            <span class="font-semibold text-gray-900">{{ total | currency:'USD' }}</span>
+          </div>
+          <button
+            type="submit"
+            [disabled]="total === 0 || !hasItems"
+            class="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50">
+            Continue to Payment
+          </button>
+        </div>
+
+        <p *ngIf="submitted && deliveryForm.invalid" class="mt-3 text-sm text-red-600">
+          Please fill in all required fields with valid information.
+        </p>
+      </form>
+
+      <!-- Payment step -->
+      <div *ngIf="step === 'payment'" class="space-y-4">
+        <p class="text-gray-700">
+          Review your delivery details and confirm payment for your artworks.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <h2 class="font-semibold text-gray-900 mb-1">Customer</h2>
+            <p class="text-gray-700">{{ delivery.fullName }}</p>
+            <p class="text-gray-500">{{ delivery.email }}</p>
+            <p class="text-gray-500">{{ delivery.phone }}</p>
+          </div>
+          <div>
+            <h2 class="font-semibold text-gray-900 mb-1">Delivery Address</h2>
+            <p class="text-gray-700">
+              {{ delivery.addressLine1 }}<span *ngIf="delivery.addressLine2">, {{ delivery.addressLine2 }}</span>
+            </p>
+            <p class="text-gray-700">
+              {{ delivery.city }}, {{ delivery.state }}
+            </p>
+            <p class="text-gray-700">
+              {{ delivery.country }} - {{ delivery.postalCode }}
+            </p>
+            <p *ngIf="delivery.deliveryNotes" class="text-gray-500 mt-1">
+              Notes: {{ delivery.deliveryNotes }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-4">
+          <div class="text-sm text-gray-500">
+            <span>Total amount: </span>
+            <span class="font-semibold text-gray-900">{{ total | currency:'USD' }}</span>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              (click)="step = 'delivery'"
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50">
+              Back
+            </button>
+            <button
+              type="button"
+              (click)="payNow()"
+              [disabled]="processing || total === 0 || !hasItems"
+              class="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50">
+              <span *ngIf="!processing">Pay Now</span>
+              <span *ngIf="processing">Processing...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success step -->
+      <div *ngIf="step === 'success'" class="text-center">
         <h2 class="text-2xl font-bold text-green-700 mb-2">Payment Successful</h2>
         <p class="text-gray-700 mb-4">
-          Your artwork purchase is confirmed (simulated).
+          Your artwork purchase is confirmed (simulated). You can track your order status in the Orders section.
         </p>
-        <button (click)="backToGallery()"
-                class="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700">
-          Back to Gallery
-        </button>
+        <div class="flex justify-center gap-3">
+          <button
+            (click)="goToOrders()"
+            class="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700">
+            View Orders
+          </button>
+          <button
+            (click)="backToGallery()"
+            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50">
+            Back to Gallery
+          </button>
+        </div>
       </div>
     </div>
   </div>

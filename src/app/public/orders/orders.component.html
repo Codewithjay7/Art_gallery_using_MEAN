@@ -1,0 +1,79 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="container mx-auto px-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Your Orders</h1>
+
+    <div *ngIf="orders.length === 0" class="bg-white rounded-lg shadow p-8 text-center">
+      <p class="text-gray-600 text-lg">You have not placed any orders yet.</p>
+      <a routerLink="/arts" class="mt-4 inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+        Browse Artworks
+      </a>
+    </div>
+
+    <div *ngIf="orders.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let order of orders" class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+        <div class="h-40 bg-gray-100">
+          <ng-container *ngIf="order.artworks[0] as first; else noArtwork">
+            <img
+              *ngIf="first.artworkImage; else noArtworkImage"
+              [src]="'http://localhost:3000' + first.artworkImage"
+              [alt]="first.artworkTitle"
+              class="w-full h-full object-cover"
+            />
+            <ng-template #noArtworkImage>
+              <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                No image
+              </div>
+            </ng-template>
+          </ng-container>
+          <ng-template #noArtwork>
+            <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+              No artworks
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="p-4 flex-1 flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono text-gray-500 truncate">#{{ order.orderId }}</span>
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold" [ngClass]="getStatusClasses(order.orderStatus)">
+              {{ order.orderStatus }}
+            </span>
+          </div>
+
+          <h2 class="text-lg font-semibold text-gray-900">{{ order.artworks[0].artworkTitle || 'Order' }}</h2>
+          <p class="text-sm text-gray-500 mb-1">{{ order.artworks[0].artistName || '' }}</p>
+          <p *ngIf="order.artworks && order.artworks.length > 1" class="text-xs text-gray-500 mb-1">
+            +{{ order.artworks.length - 1 }} more artwork(s)
+          </p>
+          <p class="text-sm font-bold text-gray-900 mb-3">{{ order.totalAmount | currency:'USD' }}</p>
+
+          <p class="text-xs text-gray-500 mb-1">
+            Ordered on
+            {{ order.orderDate | date : 'mediumDate' }}
+          </p>
+          <p class="text-xs text-gray-500 mb-2">
+            Ship to:
+            {{ order.deliveryInfo.fullName }},
+            {{ order.deliveryInfo.city }},
+            {{ order.deliveryInfo.country }}
+          </p>
+          <p class="text-xs text-gray-500 mb-4">
+            Payment:
+            <span class="font-semibold" [class.text-green-700]="order.paymentStatus === 'Paid'">
+              {{ order.paymentStatus }}
+            </span>
+          </p>
+
+          <div class="mt-auto pt-2 border-t border-gray-100 flex justify-between items-center">
+            <a
+              [routerLink]="['/orders', order.orderId]"
+              class="text-sm font-medium text-purple-600 hover:text-purple-700">
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -68,14 +68,14 @@ export class CartService {
     const newIds = this.items.map(i => i.id).filter(id => !!id && !purchased.includes(id));
     if (newIds.length) {
       const updated = [...purchased, ...newIds];
-      sessionStorage.setItem(this.purchasedKey, JSON.stringify(updated));
+      localStorage.setItem(this.purchasedKey, JSON.stringify(updated));
     }
     this.clear();
   }
 
   getPurchasedIds(): string[] {
     try {
-      const raw = sessionStorage.getItem(this.purchasedKey);
+      const raw = localStorage.getItem(this.purchasedKey);
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];

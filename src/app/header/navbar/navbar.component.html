@@ -27,8 +27,8 @@
           Artists
         </a>
       </li>
-
       <li><a routerLink="/events" class="hover:text-gray-9000-300 cursor-pointer">Events</a></li>
+      <li><a routerLink="/orders" class="hover:text-gray-9000-300 cursor-pointer">Orders</a></li>
     </ul>
 
     <!-- Search and Auth Buttons -->
@@ -118,6 +118,9 @@
                   {{ cartCount }}
                 </span>
               </span>
+            </a>
+            <a routerLink="/orders" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+              Orders
             </a>
             <a routerLink="/login" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
               Login

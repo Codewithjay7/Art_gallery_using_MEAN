@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIf, CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { AdminService, DashboardStats } from '../services/admin.service';
+import { OrderService } from '../services/order.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ export class DashboardComponent implements OnInit {
     totalArtworks: 0,
     totalUsers: 0,
     totalEvents: 0,
+    totalOrders: 0,
     soldArtworks: 0,
     unsoldArtworks: 0,
     totalRevenue: 0,
@@ -28,7 +30,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -52,6 +55,13 @@ export class DashboardComponent implements OnInit {
       next: (response) => {
         if (response.success && response.stats) {
           this.stats = response.stats;
+          const orderStats = this.orderService.getStatsFromOrders();
+          this.stats = {
+            ...this.stats,
+            totalOrders: orderStats.totalOrders,
+            soldArtworks: orderStats.soldArtworks,
+            totalRevenue: orderStats.totalRevenue
+          };
         }
         this.loading = false;
       },

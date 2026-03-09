@@ -52,6 +52,14 @@
           </svg>
           <span>Events</span>
         </a>
+        <a routerLink="/dashboard/orders" routerLinkActive="bg-gray-800 text-white"
+           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 7h18M3 12h18M3 17h18"></path>
+          </svg>
+          <span>Orders</span>
+        </a>
       </nav>
     </div>
   </aside>
@@ -204,6 +212,21 @@
             <div class="h-16 w-16 bg-yellow-100 rounded-lg flex items-center justify-center">
               <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .843-3 2 0 1.105.893 1.664 2.34 1.93L13 12.2V13m0 4h-1m0 0h-1m1 0c1.657 0 3-.843 3-2M12 6v2m0 10v-2m8-4a8 8 0 11-16 0 8 8 0 0116 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Total Orders -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600">Total Orders</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ stats.totalOrders }}</p>
+            </div>
+            <div class="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7h18M3 12h18M3 17h18"></path>
               </svg>
             </div>
           </div>

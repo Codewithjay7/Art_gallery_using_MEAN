@@ -7,6 +7,7 @@ export interface DashboardStats {
   totalArtworks: number;
   totalUsers: number;
   totalEvents: number;
+  totalOrders: number;
   soldArtworks: number;
   unsoldArtworks: number;
   totalRevenue: number;

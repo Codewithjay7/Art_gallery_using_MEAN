@@ -65,6 +65,16 @@ export const routes: Routes = [
     loadComponent: () => import('./dashboard/events/events.component').then(m => m.EventsComponent),
     canActivate: [adminGuard]
   },
+  {
+    path: 'dashboard/orders',
+    loadComponent: () => import('./dashboard/orders/orders.component').then(m => m.AdminOrdersComponent),
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'dashboard/orders/:orderId',
+    loadComponent: () => import('./dashboard/orders/order-detail/order-detail.component').then(m => m.AdminOrderDetailComponent),
+    canActivate: [adminGuard]
+  },
   // event form routes could be added similarly
   {
     path: 'artwork/:id',
@@ -89,6 +99,14 @@ export const routes: Routes = [
   {
     path: 'checkout',
     loadComponent: () => import('./public/checkout/checkout.component').then(m => m.CheckoutComponent)
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./public/orders/orders.component').then(m => m.OrdersComponent)
+  },
+  {
+    path: 'orders/:orderId',
+    loadComponent: () => import('./public/order-detail/order-detail.component').then(m => m.OrderDetailComponent)
   },
   {
     path: 'wishlist',
