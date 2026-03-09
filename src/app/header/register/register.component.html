@@ -9,6 +9,10 @@
       <div *ngIf="error" class="mb-4 p-3 bg-red-900 border border-red-600 rounded text-red-300 text-sm">
         {{ error }}
       </div>
+      <!-- Success Message -->
+      <div *ngIf="success" class="mb-4 p-3 bg-green-900 border border-green-600 rounded text-green-300 text-sm">
+        {{ success }}
+      </div>
 
       <!-- Form -->
       <form (ngSubmit)="onSubmit()">

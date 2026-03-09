@@ -83,13 +83,12 @@ export class OrderService {
     return this.ordersSubject.value;
   }
 
-  /**
-   * Orders are tied to the current browser via clientId so guest checkouts
-   * remain visible even before login and after refresh.
-   */
-  getOrdersForBrowser(): Order[] {
-    const clientId = this.getOrCreateClientId();
-    return this.getAllOrders().filter(o => o.clientId === clientId);
+  getOrdersForCurrentUser(): Order[] {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      return [];
+    }
+    return this.getAllOrders().filter(o => o.userId === user.id);
   }
 
   getOrderById(orderId: string): Order | undefined {

@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,11 +16,18 @@ export class LoginComponent {
   password: string = '';
   error: string = '';
   loading: boolean = false;
+  infoMessage: string = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    const msg = this.route.snapshot.queryParamMap.get('message');
+    if (msg) {
+      this.infoMessage = msg;
+    }
+  }
 
   onSubmit() {
     if (!this.email || !this.password) {
@@ -33,17 +41,20 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         if (response.success) {
-          const role = (response.user as any)?.role;
-          if (role !== 'admin') {
-            // Logged in but not an admin -> block dashboard access
-            this.authService.logout();
-            this.error = 'Admin access required. Please login with an admin account.';
-            this.loading = false;
-            return;
-          }
-
           this.loading = false;
-          this.router.navigate(['/dashboard']);
+          const role = (response.user as any)?.role;
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+          if (role === 'admin') {
+            this.router.navigate(['/dashboard']);
+          } else if (returnUrl) {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            this.router.navigate(['/']);
+          }
+        } else {
+          this.loading = false;
+          this.error = 'Login failed. Please try again.';
         }
       },
       error: (error) => {

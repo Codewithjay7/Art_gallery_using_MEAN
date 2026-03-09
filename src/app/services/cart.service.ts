@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Artwork } from './artwork.service';
+import { AuthService } from './auth.service';
 
 export interface CartItem {
   id: string;
+  userId: string;
+  artworkId: string;
+  artworkTitle: string;
+  artistName: string;
+  price: number;
+  image?: string;
   artwork: Artwork;
 }
 
@@ -11,24 +18,57 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
-  private storageKey = 'artGallery_cart';
+  private storageKey = 'artGallery_cart_v2';
   private purchasedKey = 'artGallery_purchased';
 
-  private itemsSubject = new BehaviorSubject<CartItem[]>(this.loadFromStorage());
+  private itemsSubject = new BehaviorSubject<CartItem[]>([]);
   items$ = this.itemsSubject.asObservable();
 
-  private loadFromStorage(): CartItem[] {
+  constructor(private authService: AuthService) {
+    this.refreshForCurrentUser();
+    this.authService.currentUser$.subscribe(() => {
+      this.refreshForCurrentUser();
+    });
+  }
+
+  private loadAllFromStorage(): CartItem[] {
     try {
-      const raw = sessionStorage.getItem(this.storageKey);
-      return raw ? JSON.parse(raw) : [];
+      const raw = localStorage.getItem(this.storageKey);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }
 
+  private saveAll(items: CartItem[]) {
+    localStorage.setItem(this.storageKey, JSON.stringify(items));
+  }
+
+  private refreshForCurrentUser() {
+    const all = this.loadAllFromStorage();
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.itemsSubject.next([]);
+      return;
+    }
+    const userItems = all.filter(i => i.userId === user.id);
+    this.itemsSubject.next(userItems);
+  }
+
   private save(items: CartItem[]) {
-    this.itemsSubject.next(items);
-    sessionStorage.setItem(this.storageKey, JSON.stringify(items));
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.itemsSubject.next([]);
+      return;
+    }
+
+    const all = this.loadAllFromStorage().filter(i => i.userId !== user.id);
+    const updatedForUser = items.map(i => ({ ...i, userId: user.id }));
+    const merged = [...all, ...updatedForUser];
+
+    this.itemsSubject.next(updatedForUser);
+    this.saveAll(merged);
   }
 
   get items(): CartItem[] {
@@ -45,9 +85,30 @@ export class CartService {
   }
 
   add(artwork: Artwork) {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      return;
+    }
+
     const id = this.getId(artwork);
     if (!id || this.isInCart(artwork)) return;
-    const items = [...this.items, { id, artwork }];
+    const artistName =
+      typeof artwork.artist === 'string'
+        ? artwork.artist
+        : (artwork.artist as any)?.name || 'Unknown Artist';
+
+    const item: CartItem = {
+      id,
+      userId: user.id,
+      artworkId: id,
+      artworkTitle: artwork.title,
+      artistName,
+      price: artwork.price || 0,
+      image: artwork.imageUrl,
+      artwork
+    };
+
+    const items = [...this.items, item];
     this.save(items);
   }
 

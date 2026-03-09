@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -13,7 +14,11 @@ import { CartService, CartItem } from '../../services/cart.service';
 export class CartComponent {
   items: CartItem[] = [];
 
-  constructor(private cartService: CartService, private router: Router) {
+  constructor(
+    private cartService: CartService,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.cartService.items$.subscribe(items => {
       this.items = items;
     });
@@ -29,6 +34,15 @@ export class CartComponent {
 
   goToCheckout() {
     if (!this.items.length) return;
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          returnUrl: this.router.url,
+          message: 'Please login to continue your purchase.'
+        }
+      });
+      return;
+    }
     this.router.navigate(['/checkout']);
   }
 }

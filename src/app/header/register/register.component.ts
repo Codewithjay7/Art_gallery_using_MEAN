@@ -16,6 +16,7 @@ export class RegisterComponent {
   password: string = '';
   confirmPassword: string = '';
   error: string = '';
+  success: string = '';
   loading: boolean = false;
 
   constructor(
@@ -41,20 +42,23 @@ export class RegisterComponent {
 
     this.loading = true;
     this.error = '';
+    this.success = '';
 
     this.authService.register(this.name, this.email, this.password).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
         if (response.success) {
           this.loading = false;
-          console.log('Token stored:', !!this.authService.getToken());
-          console.log('Navigating to dashboard...');
-          // Small delay to ensure token is stored
+          this.success = 'Registration successful. Please login to continue.';
+          // Redirect to login after short delay with info message
           setTimeout(() => {
-            this.router.navigate(['/dashboard']).then(() => {
-              console.log('Navigation complete');
+            this.router.navigate(['/login'], {
+              queryParams: { message: this.success }
             });
-          }, 100);
+          }, 1200);
+        } else {
+          this.loading = false;
+          this.error = 'Registration failed. Please try again.';
         }
       },
       error: (error) => {

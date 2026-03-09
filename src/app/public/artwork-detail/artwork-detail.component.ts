@@ -6,6 +6,7 @@ import { PublicService } from '../../services/public.service';
 import { Artwork } from '../../services/artwork.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -32,7 +33,8 @@ export class ArtworkDetailComponent implements OnInit {
     private publicService: PublicService,
     public router: Router,
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -109,6 +111,15 @@ export class ArtworkDetailComponent implements OnInit {
 
   addToCart() {
     if (!this.artwork) return;
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          returnUrl: this.router.url,
+          message: 'Please login to continue your purchase.'
+        }
+      });
+      return;
+    }
     this.cartService.add(this.artwork);
     this.syncStates();
     this.actionMessage = this.inCart ? 'Artwork added to cart.' : '';

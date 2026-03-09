@@ -5,6 +5,10 @@
         Login
       </h2>
   
+      <!-- Info Message -->
+      <div *ngIf="infoMessage" class="mb-4 p-3 bg-blue-900 border border-blue-600 rounded text-blue-300 text-sm">
+        {{ infoMessage }}
+      </div>
       <!-- Error Message -->
       <div *ngIf="error" class="mb-4 p-3 bg-red-900 border border-red-600 rounded text-red-300 text-sm">
         {{ error }}

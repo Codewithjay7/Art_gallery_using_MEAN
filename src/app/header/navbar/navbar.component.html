@@ -53,12 +53,22 @@
           {{ cartCount }}
         </span>
       </a>
-      <a routerLink="/login" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
-        Login
-      </a>
-      <a routerLink="/register" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
-        Register
-      </a>
+      <ng-container *ngIf="!currentUser; else loggedInDesktop">
+        <a routerLink="/login" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+          Login
+        </a>
+        <a routerLink="/register" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+          Register
+        </a>
+      </ng-container>
+      <ng-template #loggedInDesktop>
+        <span class="px-3 py-1 text-sm text-gray-9000-200">
+          Hello, {{ currentUser?.name }}
+        </span>
+        <button (click)="logout()" class="px-4 py-1 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors cursor-pointer">
+          Logout
+        </button>
+      </ng-template>
     </div>
 
     <!-- Mobile menu icon -->
@@ -122,12 +132,22 @@
             <a routerLink="/orders" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
               Orders
             </a>
-            <a routerLink="/login" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
-              Login
-            </a>
-            <a routerLink="/register" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
-              Register
-            </a>
+            <ng-container *ngIf="!currentUser; else loggedInMobile">
+              <a routerLink="/login" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+                Login
+              </a>
+              <a routerLink="/register" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+                Register
+              </a>
+            </ng-container>
+            <ng-template #loggedInMobile>
+              <span class="flex-1 px-4 py-2 text-sm text-center text-gray-9000-200">
+                Hello, {{ currentUser?.name }}
+              </span>
+              <button (click)="logout()" class="flex-1 px-4 py-2 border border-gray-9000-600 rounded hover:bg-gray-9000-800 transition-colors text-center cursor-pointer">
+                Logout
+              </button>
+            </ng-template>
           </div>
         </div>
       </li>

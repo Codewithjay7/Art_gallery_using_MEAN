@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SearchService } from '../../services/search.service';
 import { CartService } from '../../services/cart.service';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,14 +16,19 @@ export class NavbarComponent {
   open = false;
   searchTerm = '';
   cartCount = 0;
+  currentUser: User | null = null;
 
   constructor(
     private router: Router,
     private searchService: SearchService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService
   ) {
     this.cartService.items$.subscribe(items => {
       this.cartCount = items.length;
+    });
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
     });
   }
 
@@ -38,5 +44,9 @@ export class NavbarComponent {
     } else {
       this.router.navigate(['/arts']);
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

@@ -36,15 +36,7 @@ export class AuthService {
       name,
       email,
       password
-    }).pipe(
-      tap(response => {
-        if (response.success && response.token) {
-          this.storeToken(response.token);
-          this.storeUser(response.user);
-          this.currentUserSubject.next(response.user);
-        }
-      })
-    );
+    });
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
@@ -66,7 +58,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   getToken(): string | null {

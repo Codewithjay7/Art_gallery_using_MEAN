@@ -4,7 +4,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { DeliveryInfo, OrderService } from '../../services/order.service';
-import { ArtworkService, Artwork } from '../../services/artwork.service';
+import { ArtworkService } from '../../services/artwork.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -35,7 +36,8 @@ export class CheckoutComponent {
     private cartService: CartService,
     private router: Router,
     private orderService: OrderService,
-    private artworkService: ArtworkService
+    private artworkService: ArtworkService,
+    private authService: AuthService
   ) {}
 
   get total(): number {
@@ -49,6 +51,15 @@ export class CheckoutComponent {
   continueToPayment(form: NgForm) {
     this.submitted = true;
     if (form.invalid || !this.hasItems) {
+      return;
+    }
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          returnUrl: this.router.url,
+          message: 'Please login to continue your purchase.'
+        }
+      });
       return;
     }
     this.step = 'payment';
