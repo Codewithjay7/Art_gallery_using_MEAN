@@ -27,6 +27,12 @@ export class ArtworksComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    const nav = this.router.getCurrentNavigation();
+    const successMessage = (nav?.extras?.state as any)?.successMessage;
+    const refresh = (nav?.extras?.state as any)?.refresh;
+    if (successMessage) {
+      this.success = successMessage;
+    }
     this.loadArtworks();
   }
 

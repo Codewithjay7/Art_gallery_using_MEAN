@@ -16,11 +16,12 @@ export class ArtworkFormComponent implements OnInit {
   artworkForm: FormGroup;
   loading = false;
   error = '';
+  success = '';
   isEditMode = false;
   artworkId: string | null = null;
   imagePreview: string | null = null;
   artists: Artist[] = [];
-  categories = ['Painting', 'Sketch', 'Digital Art', 'Sculpture'];
+  categories = ['Painting', 'Sketch', 'Digital Art', 'Sculpture', 'Photography', 'Other'];
 
   constructor(
     private fb: FormBuilder,
@@ -111,6 +112,7 @@ export class ArtworkFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('[ArtworkForm] submit clicked');
     if (this.artworkForm.invalid) {
       this.error = 'Please fill in all required fields.';
       return;
@@ -124,6 +126,7 @@ export class ArtworkFormComponent implements OnInit {
 
     this.loading = true;
     this.error = '';
+    this.success = '';
 
     const formData = new FormData();
     formData.append('title', this.artworkForm.value.title);
@@ -134,6 +137,12 @@ export class ArtworkFormComponent implements OnInit {
     if (this.artworkForm.value.image) {
       formData.append('image', this.artworkForm.value.image);
     }
+    console.log('[ArtworkForm] sending FormData', {
+      title: this.artworkForm.value.title,
+      category: this.artworkForm.value.category,
+      artistId: this.artworkForm.value.artistId,
+      hasImage: !!this.artworkForm.value.image
+    });
 
     const request = this.isEditMode && this.artworkId
       ? this.artworkService.updateArtwork(this.artworkId, formData)
@@ -142,7 +151,11 @@ export class ArtworkFormComponent implements OnInit {
     request.subscribe({
       next: (response) => {
         if (response.success) {
-          this.router.navigate(['/dashboard/artworks']);
+          this.success = response.message || 'Artwork added successfully';
+          console.log('[ArtworkForm] success:', this.success);
+          this.router.navigate(['/dashboard/artworks'], {
+            state: { successMessage: this.success, refresh: true }
+          });
         } else {
           this.error = response.message || 'Failed to save artwork.';
           this.loading = false;

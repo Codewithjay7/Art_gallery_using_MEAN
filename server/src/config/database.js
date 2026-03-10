@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 const connectDB = async () => {
   try {
     // MongoDB Atlas connection string (from .env file)
@@ -18,9 +20,11 @@ const connectDB = async () => {
       socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
     });
 
+    isConnected = true;
     console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}`);
     console.log(`📊 Database: ${conn.connection.name}`);
   } catch (error) {
+    isConnected = false;
     console.error('❌ MongoDB Connection Error:');
     console.error(`   Error Message: ${error.message}`);
     
@@ -42,9 +46,11 @@ const connectDB = async () => {
     console.error('   2. Check MongoDB Atlas cluster is running');
     console.error('   3. Verify your IP is whitelisted in MongoDB Atlas Network Access');
     console.error('   4. Check your MongoDB Atlas username and password are correct');
-    
-    process.exit(1);
+    // Do not crash the entire server. Keep API running so it can return 503s.
+    // The admin panel will see a clear "MongoDB connection failure" message.
   }
 };
+
+connectDB.isConnected = () => isConnected;
 
 module.exports = connectDB;

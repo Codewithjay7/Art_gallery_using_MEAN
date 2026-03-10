@@ -28,7 +28,8 @@ export interface ArtworkResponse {
   providedIn: 'root'
 })
 export class ArtworkService {
-  private apiUrl = 'http://localhost:3000/api/admin/artworks';
+  // Required endpoint: POST /api/artworks
+  private apiUrl = 'http://localhost:3000/api/artworks';
 
   constructor(private http: HttpClient) {}
 
@@ -41,6 +42,9 @@ export class ArtworkService {
   }
 
   createArtwork(formData: FormData): Observable<ArtworkResponse> {
+    console.log('[ArtworkService] POST /api/artworks', {
+      keys: Array.from(formData.keys())
+    });
     return this.http.post<ArtworkResponse>(this.apiUrl, formData);
   }
 

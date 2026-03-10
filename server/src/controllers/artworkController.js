@@ -47,8 +47,19 @@ exports.getArtwork = async (req, res) => {
 exports.createArtwork = async (req, res) => {
   try {
     const { title, description, price, category, artistId, status, paymentStatus } = req.body;
+    console.log('[POST /api/artworks] incoming body:', {
+      title,
+      category,
+      artistId,
+      price,
+      hasFile: !!req.file
+    });
+
     if (!title || !category || !artistId) {
-      return res.status(400).json({ success: false, message: 'Title, category, and artistId are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: title, category, artistId'
+      });
     }
 
     const artist = await Artist.findById(artistId);
@@ -73,7 +84,12 @@ exports.createArtwork = async (req, res) => {
     });
 
     const populated = await Artwork.findById(artwork._id).populate('artist', 'name profileImageUrl');
-    res.status(201).json({ success: true, artwork: populated });
+    console.log('[POST /api/artworks] created artwork:', populated?._id);
+    res.status(201).json({
+      success: true,
+      message: 'Artwork added successfully',
+      artwork: populated
+    });
   } catch (error) {
     console.error('Create artwork error:', error);
     if (error.name === 'ValidationError') {

@@ -22,6 +22,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// If Mongo isn't connected, return a clear 503 for API calls that need DB.
+app.use((req, res, next) => {
+  const needsDb = req.path.startsWith('/api/') && !req.path.startsWith('/api/health');
+  if (needsDb && !connectDB.isConnected?.()) {
+    return res.status(503).json({
+      success: false,
+      message: 'MongoDB connection failure. Please check Atlas IP whitelist / MONGODB_URI and try again.'
+    });
+  }
+  next();
+});
+
 // API Info route - shows available endpoints
 app.get('/api', (req, res) => {
   res.status(200).json({
@@ -45,6 +57,8 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
+// Primary artworks API (admin create + list)
+app.use('/api/artworks', require('./routes/artworkRoutes'));
 
 // Serve uploaded images
 app.use('/uploads', express.static(UPLOAD_DIR));
