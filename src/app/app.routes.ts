@@ -66,6 +66,16 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
   {
+    path: 'dashboard/events/new',
+    loadComponent: () => import('./dashboard/events/event-form/event-form.component').then(m => m.EventFormComponent),
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'dashboard/events/edit/:id',
+    loadComponent: () => import('./dashboard/events/event-form/event-form.component').then(m => m.EventFormComponent),
+    canActivate: [adminGuard]
+  },
+  {
     path: 'dashboard/orders',
     loadComponent: () => import('./dashboard/orders/orders.component').then(m => m.AdminOrdersComponent),
     canActivate: [adminGuard]
@@ -87,6 +97,14 @@ export const routes: Routes = [
   {
     path: 'arts',
     loadComponent: () => import('./public/arts-list/arts-list.component').then(m => m.ArtsListComponent)
+  },
+  {
+    path: 'events',
+    loadComponent: () => import('./public/events-list/events-list.component').then(m => m.EventsListComponent)
+  },
+  {
+    path: 'event/:id',
+    loadComponent: () => import('./public/event-detail/event-detail.component').then(m => m.EventDetailComponent)
   },
   {
     path: 'artists',

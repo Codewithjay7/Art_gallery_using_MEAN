@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     if (category === 'All') {
       this.filteredArtworks = this.artworks;
     } else {
-      this.publicService.getArtworks(category).subscribe({
+      this.publicService.getArtworks({ category }).subscribe({
         next: (response) => {
           if (response.success && response.artworks) {
             this.filteredArtworks = response.artworks;

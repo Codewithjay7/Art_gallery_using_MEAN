@@ -25,7 +25,8 @@ export interface EventsResponse {
   providedIn: 'root'
 })
 export class EventService {
-  private apiUrl = 'http://localhost:3000/api/admin/events';
+  // Integrated endpoint: /api/events (admin-only, same pattern as artworks)
+  private apiUrl = 'http://localhost:3000/api/events';
 
   constructor(private http: HttpClient) {}
 
@@ -38,6 +39,7 @@ export class EventService {
   }
 
   createEvent(body: any): Observable<EventsResponse> {
+    console.log('[EventService] POST /api/events', body);
     return this.http.post<EventsResponse>(this.apiUrl, body);
   }
 

@@ -42,8 +42,12 @@ export class PublicService {
     return this.http.get<{ success: boolean; artist?: Artist }>(`${this.apiUrl}/artists/${id}`);
   }
 
-  getArtworks(category?: string): Observable<PublicArtworksResponse> {
-    const url = category ? `${this.apiUrl}/artworks?category=${category}` : `${this.apiUrl}/artworks`;
+  getArtworks(options?: { category?: string; artistId?: string }): Observable<PublicArtworksResponse> {
+    const params = new URLSearchParams();
+    if (options?.category) params.set('category', options.category);
+    if (options?.artistId) params.set('artistId', options.artistId);
+    const qs = params.toString();
+    const url = qs ? `${this.apiUrl}/artworks?${qs}` : `${this.apiUrl}/artworks`;
     return this.http.get<PublicArtworksResponse>(url);
   }
 

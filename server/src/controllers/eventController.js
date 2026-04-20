@@ -34,9 +34,19 @@ exports.getEvent = async (req, res) => {
 exports.createEvent = async (req, res) => {
   try {
     const { title, description, location, startDate, endDate, participatingArtists } = req.body;
+    console.log('[POST /api/events] incoming body:', {
+      title,
+      location,
+      startDate,
+      endDate,
+      participatingArtistsType: typeof participatingArtists
+    });
 
     if (!title || !location || !startDate || !endDate) {
-      return res.status(400).json({ success: false, message: 'Title, location, start date and end date are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: title, location, startDate, endDate'
+      });
     }
 
     let artistIds = [];
@@ -56,7 +66,12 @@ exports.createEvent = async (req, res) => {
     });
 
     const populated = await Event.findById(event._id).populate('participatingArtists', 'name');
-    res.status(201).json({ success: true, event: populated });
+    console.log('[POST /api/events] created event:', populated?._id);
+    res.status(201).json({
+      success: true,
+      message: 'Event added successfully',
+      event: populated
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message || 'Server error' });
   }

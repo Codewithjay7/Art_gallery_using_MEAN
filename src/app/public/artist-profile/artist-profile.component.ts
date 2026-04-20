@@ -36,7 +36,7 @@ export class ArtistProfileComponent implements OnInit {
     this.publicService.getArtist(id).subscribe({
       next: (response) => {
         if (response.success && response.artist) {
-          this.artist = response.artist;
+          this.artist = this.normalizeArtist(response.artist);
         } else {
           this.error = 'Artist not found';
         }
@@ -51,19 +51,36 @@ export class ArtistProfileComponent implements OnInit {
   }
 
   loadArtistArtworks(artistId: string) {
-    this.publicService.getArtworks().subscribe({
+    this.publicService.getArtworks({ artistId }).subscribe({
       next: (response) => {
         if (response.success && response.artworks) {
-          this.artworks = response.artworks.filter(art => {
-            const id = typeof art.artist === 'object' ? art.artist.id : art.artist;
-            return id === artistId;
-          });
+          this.artworks = response.artworks;
         }
       },
       error: (error) => {
         console.error('Error loading artworks:', error);
       }
     });
+  }
+
+  /** Map API shape (Mongo _id, social) to what templates expect */
+  private normalizeArtist(raw: Artist & { _id?: string; social?: Artist['social'] }): Artist {
+    const contact = raw.contact || {};
+    const social = raw.social || {};
+    return {
+      ...raw,
+      id: raw.id || (raw._id != null ? String(raw._id) : undefined),
+      socialLinks: raw.socialLinks || {
+        website: contact.website,
+        instagram: social.instagram,
+        twitter: social.twitter
+      }
+    };
+  }
+
+  getArtworkId(artwork: Artwork): string {
+    const a = artwork as Artwork & { _id?: string };
+    return String(a.id ?? a._id ?? '');
   }
 
   getImageUrl(imageUrl: string | undefined): string {

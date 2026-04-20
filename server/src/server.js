@@ -59,6 +59,8 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 // Primary artworks API (admin create + list)
 app.use('/api/artworks', require('./routes/artworkRoutes'));
+// Primary events API (admin create + list)
+app.use('/api/events', require('./routes/eventRoutes'));
 
 // Serve uploaded images
 app.use('/uploads', express.static(UPLOAD_DIR));

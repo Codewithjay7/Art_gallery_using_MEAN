@@ -3,10 +3,14 @@
 echo "🔄 Restarting Backend Server..."
 
 # Find and kill existing server processes
-echo "Stopping existing server..."
-lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "No server running on port 3000"
-pkill -f "nodemon.*server.js" 2>/dev/null || true
-pkill -f "node.*server.js" 2>/dev/null || true
+echo "Stopping existing server on port 3000..."
+# Only free the port (do not pkill every node server.js on the machine)
+if lsof -ti:3000 >/dev/null 2>&1; then
+  lsof -ti:3000 | xargs kill -9
+  echo "Stopped process(es) listening on port 3000."
+else
+  echo "No process was listening on port 3000."
+fi
 
 sleep 2
 

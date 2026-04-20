@@ -24,6 +24,12 @@ export class EventsComponent implements OnInit {
   constructor(private eventService: EventService, private router: Router) {}
 
   ngOnInit() {
+    const nav = this.router.getCurrentNavigation();
+    const successMessage = (nav?.extras?.state as any)?.successMessage;
+    const refresh = (nav?.extras?.state as any)?.refresh;
+    if (successMessage) {
+      this.success = successMessage;
+    }
     this.loadEvents();
   }
 

@@ -11,6 +11,14 @@ export interface Artist {
   contact?: {
     email?: string;
     phone?: string;
+    website?: string;
+  };
+  /** Present on API responses before normalization */
+  social?: {
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+    facebook?: string;
   };
   socialLinks?: {
     website?: string;
